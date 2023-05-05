@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "denoland.vscode-deno",
+    "githubocto.flat",
+    "github.vscode-github-actions"
+  ]
+}
