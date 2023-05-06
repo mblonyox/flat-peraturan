@@ -1,11 +1,11 @@
-name: flat
+name: peraturan.go.id
 on:
   schedule:
     - cron: 0 * * * *
   workflow_dispatch: {}
   push:
     paths:
-      - .github/workflows/flat.yml
+      - .github/workflows/peraturan.go.id.yml
       - ./peraturan.go.id/postprocess.ts
 jobs:
   scheduled:
@@ -14,7 +14,7 @@ jobs:
       - name: Setup deno
         uses: denoland/setup-deno@main
         with:
-          deno-version: v1.33.x
+          deno-version: v1.x
       - name: Check out repo
         uses: actions/checkout@v2
       - name: Fetch data
@@ -22,4 +22,11 @@ jobs:
         with:
           http_url: https://peraturan.go.id/sitemap.xml
           downloaded_filename: peraturan.go.id/sitemap.xml
-          postprocess: ./peraturan.go.id/postprocess.ts
+      - name: Process file
+        run: deno run -A ./peraturan.go.id/postprocess.ts ./peraturan.go.id/sitemap.xml
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: master
+          force: true
