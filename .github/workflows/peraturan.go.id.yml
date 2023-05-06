@@ -16,7 +16,7 @@ jobs:
         with:
           deno-version: v1.x
       - name: Check out repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Fetch data
         uses: githubocto/flat@v3
         with:
@@ -24,9 +24,10 @@ jobs:
           downloaded_filename: peraturan.go.id/sitemap.xml
       - name: Process file
         run: deno run -A ./peraturan.go.id/postprocess.ts ./peraturan.go.id/sitemap.xml
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-          force: true
+      - name: Commit & Push
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "generated"
+          git push
