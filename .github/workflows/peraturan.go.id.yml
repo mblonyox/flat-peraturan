@@ -1,7 +1,7 @@
 name: peraturan.go.id
 on:
   schedule:
-    - cron: 0 * * * *
+    - cron: 30 7 * * *
   workflow_dispatch: {}
   push:
     paths:
@@ -11,12 +11,17 @@ jobs:
   scheduled:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup deno
-        uses: denoland/setup-deno@main
-        with:
-          deno-version: v1.x
       - name: Check out repo
         uses: actions/checkout@v3
+      - name: Setup deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+      - name: Cache Deno dependencies 
+        uses: actions/cache@v3
+        with:
+          path: /home/runner/.cache/deno
+          key: ${{ hashFiles('deno.lock') }}
       - name: Fetch data
         uses: githubocto/flat@v3
         with:
@@ -26,7 +31,7 @@ jobs:
         run: deno run -A ./peraturan.go.id/postprocess.ts ./peraturan.go.id/sitemap.xml
       - id: git-check
         name: Check for modified files
-        run: echo SELECTED_COLOR=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi) >> "$GITHUB_OUTPUT"
+        run: echo modified=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi) >> "$GITHUB_OUTPUT"
       - name: Commit & Push
         if: steps.git-check.outputs.modified == 'true'
         run: |

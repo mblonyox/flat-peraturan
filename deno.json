@@ -1,0 +1,6 @@
+{
+  "tasks": {
+    "pgi": "deno run -A peraturan.go.id/postprocess.ts peraturan.go.id/sitemap.xml"
+  },
+  "importMap": "import_map.json"
+}
