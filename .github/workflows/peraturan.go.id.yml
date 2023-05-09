@@ -28,7 +28,7 @@ jobs:
           http_url: https://peraturan.go.id/sitemap.xml
           downloaded_filename: peraturan.go.id/sitemap.xml
       - name: Process file
-        run: deno run -A ./peraturan.go.id/postprocess.ts ./peraturan.go.id/sitemap.xml
+        run: deno task pgi
       - id: git-check
         name: Check for modified files
         run: echo modified=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi) >> "$GITHUB_OUTPUT"

@@ -1,11 +1,7 @@
-import {
-  readCSV,
-  readTXT,
-  writeCSV,
-} from "https://deno.land/x/flat@0.0.15/mod.ts";
-import { parse } from "https://deno.land/x/xml@2.1.1/mod.ts";
-import { node } from "https://deno.land/x/xml@2.1.1/utils/types.ts";
-import { DOMParser } from "https://deno.land/x/deno_dom@v0.1.38/deno-dom-wasm.ts";
+import { readCSV, readTXT, writeCSV } from "flat";
+import { parse } from "xml/mod.ts";
+import { node } from "xml/utils/types.ts";
+import { DOMParser } from "deno_dom/deno-dom-wasm.ts";
 
 interface UrlTag {
   loc: string;
@@ -20,6 +16,7 @@ interface Data {
 
 const input = Deno.args[0];
 const output = "peraturan.go.id/data.csv";
+const invalid = "peraturan.go.id/invalid_urls.txt";
 const limit = 1000;
 
 console.log("Parsing sitemap.xml:");
@@ -29,15 +26,21 @@ const size = await Deno.open(input).then((file) => file.stat()).then(
 const sitemap = parse(await readTXT(input), {
   progress: (bytes) => printProgress(bytes, size),
 });
+console.log("\nSitemap parsing completed.");
 
 const datas = await readCSV(output).catch((
   _reason,
 ) => (<unknown> [] as Record<string, unknown>[]));
-console.log("\nLoad saved datas.");
+
+const invalidUrls = await Deno.readTextFile(invalid).then((txt) =>
+  txt.trim().split("\n")
+).catch((_) => [] as string[]);
 
 const urlset = sitemap.urlset as node;
 const urls = (urlset.url as UrlTag[]).map((url) => url.loc);
-const newUrls = urls.filter((url) => !datas.some((data) => data.url === url));
+const newUrls = urls.filter((url) =>
+  !datas.some((data) => data.url === url) && !invalidUrls.includes(url)
+);
 console.log(`\n${newUrls.length} new url(s) found.`);
 
 const processed = newUrls.slice(0, limit);
@@ -50,10 +53,13 @@ for (const [current, url] of processed.entries()) {
     const data = await getData(url);
     datas.push(data);
   } catch (error) {
+    invalidUrls.push(url);
     console.error(error);
   }
 }
+console.log("Processing new url(s) completed.");
 
+await Deno.writeTextFile(invalid, invalidUrls.join("\n"));
 await writeCSV(output, datas);
 console.log("\nWrite saved datas.");
 
