@@ -22,13 +22,9 @@ jobs:
         with:
           path: /home/runner/.cache/deno
           key: ${{ hashFiles('deno.lock') }}
-      - name: Fetch data
-        uses: githubocto/flat@v3
-        with:
-          http_url: https://peraturan.go.id/sitemap.xml
-          downloaded_filename: peraturan.go.id/sitemap.xml
-      - name: Process file
-        run: deno task pgi
+      - name: Run script
+        working-directory: ./peraturan.go.id/
+        run: deno run -A --unstable main.ts
       - id: git-check
         name: Check for modified files
         run: echo modified=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi) >> "$GITHUB_OUTPUT"

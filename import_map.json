@@ -1,7 +1,9 @@
 {
   "imports": {
+    "~/": "./",
     "flat": "https://deno.land/x/flat@0.0.15/mod.ts",
     "xml/": "https://deno.land/x/xml@2.1.1/",
-    "deno_dom/": "https://deno.land/x/deno_dom@v0.1.38/"
+    "deno_dom/": "https://deno.land/x/deno_dom@v0.1.43/",
+    "qs": "https://esm.sh/qs@6.11.2"
   }
 }
