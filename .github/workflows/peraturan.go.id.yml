@@ -31,7 +31,7 @@ jobs:
           path: ./peraturan.go.id/_temp_
       - name: Run script
         working-directory: ./peraturan.go.id/
-        run: deno run -A --unstable main.ts --start=${{ github.event.inputs.start }}
+        run: deno run -A --unstable main.ts ${{ github.event.inputs.start == 'true' && '--start' }}
       - name: Upload _temp_ artifacts
         uses: actions/upload-artifact@v3
         with:
