@@ -28,8 +28,7 @@ jobs:
       - name: Download _temp_ artifacts
         uses: actions/download-artifact@v3
         with:
-          name: temp
-          if_no_artifact_found: ignore
+          path: ./peraturan.go.id/_temp_
       - name: Run script
         working-directory: ./peraturan.go.id/
         run: deno run -A --unstable main.ts --start=${{ github.event.inputs.start }}
