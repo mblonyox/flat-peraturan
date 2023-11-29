@@ -1,3 +1,4 @@
+import { parseArgs } from "$std/cli/parse_args.ts";
 import { kv } from "~/utils/kv.ts";
 import { getPendingMessages, Message } from "~/peraturan.go.id/message.ts";
 import { processIndexPage } from "~/peraturan.go.id/index-page.ts";
@@ -19,6 +20,7 @@ async function handleMessage(message: Message) {
 }
 
 if (import.meta.main) {
+  const args = parseArgs(Deno.args, { boolean: ["start"] });
   let pending = 0;
   const messages = getPendingMessages();
   for await (const { value, key } of messages) {
@@ -27,9 +29,13 @@ if (import.meta.main) {
     await handleMessage(value);
     await kv.delete(key);
   }
-  if (!pending && Deno.env.get("INPUT_START")) {
+  if (!pending && args.start) {
     console.log("[Start processing.]");
     start();
   }
   kv.listenQueue((v) => handleMessage(v as Message));
+  setTimeout(() => {
+    kv.close();
+    Deno.exit();
+  }, 300_000);
 }

@@ -1,4 +1,3 @@
-import { Document } from "deno_dom/deno-dom-wasm.ts";
 import { Element, getPageHtml, HTMLDocument } from "~/utils/dom.ts";
 
 function parseTable(el: Element) {
@@ -11,7 +10,7 @@ function parseTable(el: Element) {
   return data;
 }
 
-function getDokumenUrls(html: Document) {
+function getDokumenUrls(html: HTMLDocument) {
   const el = html.getElementsByClassName("share-buttons").find((el) =>
     el.innerText === "Dokumen Peraturan :"
   );

@@ -2,7 +2,10 @@ name: peraturan.go.id
 on:
   schedule:
     - cron: 30 7 * * *
-  workflow_dispatch: {}
+  workflow_dispatch: 
+    inputs:
+      start:
+        type: boolean
   push:
     paths:
       - .github/workflows/peraturan.go.id.yml
@@ -22,9 +25,18 @@ jobs:
         with:
           path: /home/runner/.cache/deno
           key: ${{ hashFiles('deno.lock') }}
+      - name: Download _temp_ artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: temp
       - name: Run script
         working-directory: ./peraturan.go.id/
-        run: deno run -A --unstable main.ts
+        run: deno run -A --unstable main.ts --start=${{ github.event.inputs.start }}
+      - name: Upload _temp_ artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: temp
+          path: ./peraturan.go.id/_temp_
       - id: git-check
         name: Check for modified files
         run: echo modified=$(if [ -n "$(git status --porcelain)" ]; then echo "true"; else echo "false"; fi) >> "$GITHUB_OUTPUT"

@@ -1,3 +1,4 @@
 /// <reference lib="deno.unstable" />
 
-export const kv = await Deno.openKv("./state.db");
+await Deno.mkdir("./_temp_", { recursive: true });
+export const kv = await Deno.openKv("./_temp_/state.db");

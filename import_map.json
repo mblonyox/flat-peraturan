@@ -1,6 +1,7 @@
 {
   "imports": {
     "~/": "./",
+    "$std/": "https://deno.land/std@0.207.0/",
     "flat": "https://deno.land/x/flat@0.0.15/mod.ts",
     "xml/": "https://deno.land/x/xml@2.1.1/",
     "deno_dom/": "https://deno.land/x/deno_dom@v0.1.43/",
