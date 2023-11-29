@@ -44,5 +44,5 @@ export async function processDetailPage(url: URL) {
   if (!html) return;
   const data = getData(html);
   data.pdfs = getDokumenUrls(html);
-  saveData;
+  return saveData(data);
 }
