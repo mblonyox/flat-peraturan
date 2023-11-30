@@ -33,7 +33,7 @@ function getData(html: HTMLDocument) {
 }
 
 function saveData(data: unknown) {
-  return Deno.writeTextFile("./data.txt", JSON.stringify(data), {
+  return Deno.writeTextFile("./data.jsonl", JSON.stringify(data), {
     append: true,
     create: true,
   });
